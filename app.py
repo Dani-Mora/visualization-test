@@ -36,10 +36,15 @@ last_update = html.Div([html.H2(f'Ultima actualització: {date_str}')],
 
 app = dash.Dash()
 
+server = app.server
+
 app.layout = html.Div([
     title,
     last_update,
     dcc.Graph(figure=fig, style={"width": "90vw", "height": "95vh"})
 ])
 
-app.run_server(debug=True)
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
+
