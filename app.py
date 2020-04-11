@@ -1,4 +1,4 @@
-import plotly.graph_objects as go # or plotly.express as px
+import plotly.graph_objects as go
 
 import dash
 import dash_core_components as dcc
@@ -43,7 +43,7 @@ def _map_plot(df) -> go.Figure:
 def _last_update_text():
     cat_time = timezone.localize(datetime.datetime.now())
     cat_str_time = cat_time.strftime("%Y-%m-%d %H:%M:%S")
-    return [html.H3(f'Ultima actualització: {cat_str_time}, CEST (UTC+2)')]
+    return [html.H3(f'Darrera actualització: {cat_str_time}, CEST (UTC+2)')]
 
 
 
