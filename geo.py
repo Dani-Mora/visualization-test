@@ -10,9 +10,11 @@ def _shp_to_geojson(shp_path: str, geojson_path: str, index: str) -> None:
     In order to generate ABS_2018.geojson, we need to:
 
     1- Download data from http://salutweb.gencat.cat/web/.content/_departament/estadistiques-sanitaries/cartografia/ABS_2018.zip
-    2- Unzip into ABS_2018
+    2- Unzip downloaded zip file
+    3- Simplify shape file by using mapshaper (https://github.com/mbloch/mapshaper):
+        mapshaper ABS_2018/ABS_2018.shp -simplify 5% keep-shapes -o out.shp
     3- Call
-        _shp_to_geojson(os.path.join('ABS_2018', 'ABS_2018.shp'),
+        _shp_to_geojson('out.shp'),
                         'ABS_2018.geojson',
                         index='CODIABS')
 
