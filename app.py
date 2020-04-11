@@ -4,47 +4,90 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
+from dash.dependencies import (
+    Input,
+    Output
+)
+
 from geo import geojson_data
 from data import latest_data
 
+import pytz
 import datetime
 
-current_time = datetime.datetime.now()
+
+app = dash.Dash()
+server = app.server
 
 geo_data = geojson_data()
-test_df = latest_data()
 
-fig = go.Figure(go.Choroplethmapbox(geojson=geo_data,
-                                    locations=test_df.ABSCodi,
-                                    text=test_df.ABSDescripcio,
-                                    hovertemplate='%{text}<extra>%{z}</extra>',
-                                    z=test_df.TotalTests))
+timezone = pytz.timezone('Europe/Berlin')
 
-fig.update_layout(mapbox_style="carto-positron",
-                  mapbox_center={"lat": 41.75, "lon": 2.10},
-                  mapbox_zoom=7.25,
-                  autosize=True)
+
+def _map_plot(df) -> go.Figure:
+    fig = go.Figure(go.Choroplethmapbox(geojson=geo_data,
+                                        locations=df.ABSCodi,
+                                        text=df.ABSDescripcio,
+                                        hovertemplate='%{text}<extra>%{z}</extra>',
+                                        z=df.TotalTests))
+
+
+    fig.update_layout(mapbox_style="carto-positron",
+                      mapbox_center={"lat": 41.75, "lon": 2.10},
+                      mapbox_zoom=7.25,
+                      autosize=True)
+
+    return fig
+
+
+def _last_update_text():
+    cat_time = timezone.localize(datetime.datetime.now())
+    cat_str_time = cat_time.strftime("%Y-%m-%d %H:%M:%S")
+    return [html.H3(f'Ultima actualització: {cat_str_time}, CEST (UTC+2)')]
+
+
 
 # Page title
 title = html.Div([html.H1('COVID-19 tests realitzats a Catalunya')],
                  style={'textAlign': "center", "padding-bottom": "30"})
 
 # Last update
-date_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
-last_update = html.Div([html.H2(f'Ultima actualització: {date_str}')],
-                       style={'textAlign': "center", "padding-bottom": "30"})
+last_update = html.Div(id='last-updated-text',
+                       children=_last_update_text(),
+                       style={'textAlign': "center", "padding-bottom": "10"})
 
-app = dash.Dash()
+timer = dcc.Interval(
+    id='interval-component',
+    interval=2*60*60*1000, # Update every 2 hours (ms)
+    n_intervals=0
+)
 
-server = app.server
 
 app.layout = html.Div([
     title,
     last_update,
-    dcc.Graph(figure=fig, style={"width": "90vw", "height": "95vh"})
+    dcc.Graph(id='main-graph',
+              figure=_map_plot(latest_data()),
+              style={"width": "90vw", "height": "95vh"}),
+    timer
 ])
+
+
+@app.callback(Output(component_id='main-graph', component_property='figure'),
+              [Input(component_id='interval-component',
+                     component_property='n_intervals')])
+def update_main_figure(n):
+    df = latest_data()
+    return _map_plot(df)
+
+
+@app.callback(Output(component_id='last-updated-text',
+                     component_property='children'),
+              [Input(component_id='interval-component',
+                     component_property='n_intervals')])
+def update_main_figure(n):
+    return _last_update_text()
 
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
