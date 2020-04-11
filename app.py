@@ -16,12 +16,12 @@ import pytz
 import datetime
 
 
+geo_data = geojson_data()
+timezone = pytz.timezone('Europe/Berlin')
+source_code_url = 'https://github.com/Dani-Mora/covid-tests-visualization'
+
 app = dash.Dash()
 server = app.server
-
-geo_data = geojson_data()
-
-timezone = pytz.timezone('Europe/Berlin')
 
 
 def _map_plot(df) -> go.Figure:
@@ -33,8 +33,8 @@ def _map_plot(df) -> go.Figure:
                                         z=df.TotalTests))
 
 
-    fig.update_layout(mapbox_style="carto-positron",
-                      mapbox_center={"lat": 41.75, "lon": 2.10},
+    fig.update_layout(mapbox_style='carto-positron',
+                      mapbox_center={'lat': 41.75, 'lon': 2.10},
                       mapbox_zoom=7.25,
                       autosize=True)
 
@@ -43,19 +43,21 @@ def _map_plot(df) -> go.Figure:
 
 def _last_update_text():
     cat_time = timezone.localize(datetime.datetime.now())
-    cat_str_time = cat_time.strftime("%Y-%m-%d %H:%M:%S")
+    cat_str_time = cat_time.strftime('%Y-%m-%d %H:%M:%S')
     return [html.H3(f'Darrera actualització: {cat_str_time}, CEST (UTC+2)')]
 
 
-
-# Page title
 title = html.Div([html.H1('COVID-19 tests realitzats a Catalunya')],
-                 style={'textAlign': "center", "padding-bottom": "30"})
+                 style={'textAlign': 'center', 'padding-bottom': '30'})
 
-# Last update
 last_update = html.Div(id='last-updated-text',
                        children=_last_update_text(),
-                       style={'textAlign': "center", "padding-bottom": "10"})
+                       style={'textAlign': 'center', 'padding-bottom': '10'})
+
+source_code = html.Div(
+    [html.H5(html.A(href=source_code_url, children='Codi font'))],
+    style={'textAlign': "left", 'padding-left': '5vw'}
+)
 
 timer = dcc.Interval(
     id='interval-component',
@@ -69,7 +71,8 @@ app.layout = html.Div([
     last_update,
     dcc.Graph(id='main-graph',
               figure=_map_plot(latest_data()),
-              style={"width": "90vw", "height": "95vh"}),
+              style={'width': '90vw', 'height': '95vh'}),
+    source_code,
     timer
 ])
 
