@@ -28,6 +28,7 @@ def _map_plot(df) -> go.Figure:
     fig = go.Figure(go.Choroplethmapbox(geojson=geo_data,
                                         locations=df.ABSCodi,
                                         text=df.ABSDescripcio,
+                                        colorscale='Greens',
                                         hovertemplate='%{text}<extra>%{z}</extra>',
                                         z=df.TotalTests))
 
