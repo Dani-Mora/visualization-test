@@ -74,8 +74,8 @@ def _map_plot() -> go.Figure:
 
 
     fig.update_layout(mapbox_style='carto-positron',
-                      mapbox_center={'lat': 41.75, 'lon': 2.10},
-                      mapbox_zoom=7.25,
+                      mapbox_center={'lat': 41.70, 'lon': 2.10},
+                      mapbox_zoom=6.42,
                       autosize=True)
 
     return fig
