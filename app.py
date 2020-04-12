@@ -70,6 +70,7 @@ def _map_plot() -> go.Figure:
                                         text=df.ABSDescripcio,
                                         colorscale='Greens',
                                         hovertemplate='%{text}<extra>%{z}</extra>',
+                                        marker_opacity=0.70,
                                         z=df.TotalTests))
 
 
