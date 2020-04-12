@@ -100,12 +100,6 @@ source_code = html.Div(
     style={'textAlign': "left", 'padding-left': '5vw'}
 )
 
-timer = dcc.Interval(
-    id='interval-component',
-    interval=2*60*60*1000, # Update every 2 hours (ms)
-    n_intervals=0
-)
-
 main_div = html.Div([
     dcc.Graph(
         id='main-graph',
@@ -121,24 +115,8 @@ app.layout = html.Div([
     title,
     last_update,
     main_div,
-    source_code,
-    timer
+    source_code
 ])
-
-
-@app.callback([
-    Output(component_id='daily-plot-graph', component_property='figure'),
-    Output(component_id='main-graph', component_property='figure'),
-    Output(component_id='last-updated-text', component_property='children')],
-    [Input(component_id='interval-component', component_property='n_intervals')]
-)
-def update_app(n):
-    print(f'Update plot: {n}')
-    global last_update_time
-    last_update_time = datetime.datetime.now()
-    global current_df
-    current_df = latest_data()
-    return _daily_info_plot(), _map_plot(), _last_update_text()
 
 
 if __name__ == '__main__':

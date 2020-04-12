@@ -2,11 +2,9 @@ import pandas as pd
 
 from datetime import datetime
 
-URL = 'https://analisi.transparenciacatalunya.cat/api/views/xuwf-dxjd/rows.csv'
-
 
 def latest_data():
-    df = pd.read_csv(URL)
+    df = pd.read_csv('rows.csv')
     df['Data'] = df['Data'].apply(
         lambda x: datetime.strptime(x, '%d/%m/%Y')
     )
