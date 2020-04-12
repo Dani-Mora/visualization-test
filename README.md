@@ -19,3 +19,14 @@ App can be locally deployed by typing (make sure you installed the environment, 
 ```
 pipenv shell run app.py
 ```
+
+# Future work
+
+The next features to be considered, ordered by decreasing priority, are:
+
+1. Allow displaying positive rate per ABS region.
+1. Allow displaying test rate according to ABS region population density.
+1. Allow displaying positive rate according to region population density.
+1. Add pre-commit hook to make sure requirements is aligned with Pipfile.
+1. Add flake8/pylint pre-commit hooks.
+
