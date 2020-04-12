@@ -24,13 +24,13 @@ import datetime
 
 
 geo_data = geojson_data()
-timezone = pytz.timezone('Europe/Berlin')
 source_code_url = 'https://github.com/Dani-Mora/covid-tests-visualization'
 
 app = dash.Dash()
 server = app.server
 
-last_update_time = datetime.datetime.now()
+timezone = pytz.timezone('Europe/Berlin')
+last_update_time = datetime.datetime.now(timezone)
 current_df = latest_data()
 
 
@@ -82,9 +82,8 @@ def _map_plot() -> go.Figure:
 
 
 def _last_update_text():
-    cat_time = timezone.localize(last_update_time)
-    cat_str_time = cat_time.strftime('%Y-%m-%d %H:%M:%S')
-    return [html.H3(f'Darrera actualització: {cat_str_time}, CEST (UTC+2)')]
+    str_time = last_update_time.strftime('%Y-%m-%d %H:%M:%S')
+    return [html.H3(f'Darrera actualització: {str_time}, CEST (UTC+2)')]
 
 
 # Define page structure
