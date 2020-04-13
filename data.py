@@ -28,8 +28,8 @@ def tests_per_abs(df: pd.DataFrame) -> pd.DataFrame:
 
 def daily_tests(df: pd.DataFrame) -> pd.DataFrame:
     return df \
-        .groupby(['Data'])['Data'] \
-        .count() \
+        .groupby(['Data'])['NumCasos'] \
+        .sum() \
         .reset_index(name='Tests') \
         .fillna(0)
 
