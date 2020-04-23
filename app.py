@@ -55,7 +55,8 @@ def _daily_info_plot() -> go.Figure:
     fig.update_xaxes(title_text='Data')
     fig.update_yaxes(title_text='Tests', secondary_y=False)
     fig.update_yaxes(title_text='Positius (%)',
-                     secondary_y=True)
+                     secondary_y=True,
+                     range=[0, 100])
 
     fig.update_layout(title='Dades diàries',
                       autosize=True,
