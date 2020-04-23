@@ -16,7 +16,8 @@ from data import (
     latest_data,
     daily_tests,
     daily_positive_rates,
-    tests_per_abs
+    tests_per_abs,
+    DATA_COL
 )
 
 import pytz
@@ -38,14 +39,14 @@ def _daily_info_plot() -> go.Figure:
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     daily_tests_df = daily_tests(current_df)
-    fig.add_trace(go.Scatter(x=daily_tests_df.Data,
+    fig.add_trace(go.Scatter(x=daily_tests_df[DATA_COL],
                              y=daily_tests_df.Tests,
                              mode='markers',
                              name='Tests'),
                   secondary_y=False)
 
     daily_rates_df = daily_positive_rates(current_df)
-    fig.add_trace(go.Scatter(x=daily_rates_df.Data,
+    fig.add_trace(go.Scatter(x=daily_rates_df[DATA_COL],
                              y=daily_rates_df['Percentatge positious'],
                              mode='markers',
                              name='Positius (%)'),
