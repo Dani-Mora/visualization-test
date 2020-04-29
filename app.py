@@ -17,7 +17,6 @@ from data import (
     daily_tests,
     daily_positive_rates,
     tests_per_abs,
-    DATA_COL
 )
 
 import pytz
@@ -39,14 +38,14 @@ def _daily_info_plot() -> go.Figure:
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     daily_tests_df = daily_tests(current_df)
-    fig.add_trace(go.Scatter(x=daily_tests_df[DATA_COL],
+    fig.add_trace(go.Scatter(x=daily_tests_df.Date,
                              y=daily_tests_df.Tests,
                              mode='markers',
                              name='Tests'),
                   secondary_y=False)
 
     daily_rates_df = daily_positive_rates(current_df)
-    fig.add_trace(go.Scatter(x=daily_rates_df[DATA_COL],
+    fig.add_trace(go.Scatter(x=daily_rates_df.Date,
                              y=daily_rates_df['Percentatge positious'],
                              mode='markers',
                              name='Positius (%)'),
@@ -67,13 +66,14 @@ def _daily_info_plot() -> go.Figure:
 
 def _map_plot() -> go.Figure:
     df = tests_per_abs(current_df)
-    fig = go.Figure(go.Choroplethmapbox(geojson=geo_data,
-                                        locations=df.ABSCodi,
-                                        text=df.ABSDescripcio,
-                                        colorscale='Greens',
-                                        hovertemplate='%{text}<extra>%{z}</extra>',
-                                        marker_opacity=0.70,
-                                        z=df.TotalTests))
+    fig = go.Figure(go.Choroplethmapbox(
+        geojson=geo_data,
+        locations=df.ABSCode,
+        text=df.ABSText,
+        colorscale='Greens',
+        hovertemplate='%{text}<extra>%{z}</extra>',
+        marker_opacity=0.70,
+        z=df.TotalTests))
 
 
     fig.update_layout(mapbox_style='carto-positron',

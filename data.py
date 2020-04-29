@@ -1,45 +1,69 @@
 import pandas as pd
 
+from enum import Enum
+
 from datetime import datetime
 
-DATA_COL = 'TipusCasData'
-DIAGNOSE_COL = 'TipusCasDescripcio'
-
-NUM_COL = 'NumCasos'
 POSITIVE_STR = 'Positiu'
 NEGATIVE_STR = 'Sospitós'
 
 
+class DataColumn(Enum):
+
+    date = 'TipusCasData'
+    abs_code = 'ABSCodi'
+    abs_text = 'ABSDescripció'
+    diagnose = 'TipusCasDescripcio'
+    cases = 'NumCasos'
+
+
+def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """ Rename columns to the expected names """
+
+    def column(df: pd.DataFrame, column: DataColumn) -> str:
+        return [col for col in df.columns.values if column.value in col][0]
+
+    return df.rename(columns={
+        column(df, DataColumn.date): 'Date',
+        column(df, DataColumn.abs_code): 'ABSCode',
+        column(df, DataColumn.abs_text): 'ABSText',
+        column(df, DataColumn.diagnose): 'Diagnose',
+        column(df, DataColumn.cases): 'Cases',
+    })
+
 
 def latest_data():
     df = pd.read_csv('rows.csv')
-    df = df.dropna(subset=[DATA_COL, NUM_COL, DIAGNOSE_COL])
-    df[DATA_COL] = df[DATA_COL].apply(
+    # Rename columns, as column names usually change
+    df = rename_columns(df)
+    df = df.dropna(subset=['Date', 'Diagnose', 'Cases'])
+    # Parse date into DateTime
+    df.Date = df.Date.apply(
         lambda x: datetime.strptime(x, '%d/%m/%Y')
     )
     return df
 
 
+
 def tests_per_abs(df: pd.DataFrame) -> pd.DataFrame:
 
     def extract_stats(df: pd.DataFrame) -> pd.Series:
+
         return pd.Series({
-            'TotalTests': df[NUM_COL].sum(),
-            'Positius': df[
-                df[DIAGNOSE_COL] == POSITIVE_STR][NUM_COL].sum(),
-            'Negatius': df[
-                df[DIAGNOSE_COL] == NEGATIVE_STR][NUM_COL].sum()
+            'TotalTests': df.Cases.sum(),
+            'Positius': df[df.Diagnose == POSITIVE_STR].Cases.sum(),
+            'Negatius': df[df.Diagnose == NEGATIVE_STR].Cases.sum()
         })
 
     return df \
-        .groupby(['ABSCodi', 'ABSDescripcio']) \
+        .groupby(['ABSCode', 'ABSText']) \
         .apply(extract_stats) \
         .reset_index()
 
 
 def daily_tests(df: pd.DataFrame) -> pd.DataFrame:
     return df \
-        .groupby([DATA_COL])[NUM_COL] \
+        .groupby(['Date']).Cases \
         .sum() \
         .reset_index(name='Tests') \
         .fillna(0)
@@ -48,11 +72,11 @@ def daily_tests(df: pd.DataFrame) -> pd.DataFrame:
 def daily_positive_rates(df: pd.DataFrame) -> pd.DataFrame:
 
     def _get_positive_perc(df: pd.DataFrame) -> float:
-        positives = df[df[DIAGNOSE_COL] == POSITIVE_STR][NUM_COL].sum()
-        return round(positives / df[NUM_COL].sum() * 100, 2)
+        positives = df[df.Diagnose == POSITIVE_STR].Cases.sum()
+        return round(positives / df.Cases.sum() * 100, 2)
 
     return df \
-        .groupby([DATA_COL]) \
+        .groupby(['Date']) \
         .apply(_get_positive_perc) \
         .reset_index(name='Percentatge positious') \
         .fillna(0)
