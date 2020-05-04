@@ -12,7 +12,7 @@ class DataColumn(Enum):
 
     date = 'TipusCasData'
     abs_code = 'ABSCodi'
-    abs_text = 'ABSDescripció'
+    abs_text = 'ABSDescripcio'
     diagnose = 'TipusCasDescripcio'
     cases = 'NumCasos'
 
