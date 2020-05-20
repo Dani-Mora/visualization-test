@@ -71,3 +71,7 @@ def daily_positive_rates(df: pd.DataFrame) -> pd.DataFrame:
         .apply(_get_positive_perc) \
         .reset_index(name='Percentatge positius') \
         .fillna(0)
+
+
+def total_tests_num(df: pd.DataFrame) -> int:
+    return df.Cases.sum()

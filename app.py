@@ -17,6 +17,7 @@ from data import (
     daily_tests,
     daily_positive_rates,
     tests_per_abs,
+    total_tests_num,
 )
 
 import pytz
@@ -92,13 +93,23 @@ def _last_update_text():
     return [html.H3(f'Darrera actualització: {str_time}, CEST (UTC+2)')]
 
 
+def _total_tests_text():
+    return [html.H3(f'Total tests realitzats: {total_tests_num(current_df)}')]
+
+
 # Define page structure
 title = html.Div([html.H1('COVID-19 tests realitzats a Catalunya')],
                  style={'textAlign': 'center', 'padding-bottom': '30'})
 
+total_tests = html.Div(id='total-tests-text',
+                       children=_total_tests_text(),
+                       style={'textAlign': 'center', 'padding-bottom': '10'})
+
+
 last_update = html.Div(id='last-updated-text',
                        children=_last_update_text(),
                        style={'textAlign': 'center', 'padding-bottom': '10'})
+
 
 source_code = html.Div(
     [html.H5(html.A(href=source_code_url, children='Codi font'))],
@@ -113,11 +124,12 @@ main_div = html.Div([
     dcc.Graph(
         id='daily-plot-graph',
         figure=_daily_info_plot(),
-        style={'width': '100vw', 'height': '40vh'})
+        style={'width': '100vw', 'height': '40vh'}),
 ])
 
 app.layout = html.Div([
     title,
+    total_tests,
     last_update,
     main_div,
     source_code
