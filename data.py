@@ -46,14 +46,10 @@ def latest_data():
 
 
 def tests_per_abs(df: pd.DataFrame) -> pd.DataFrame:
-
-    def extract_stats(df: pd.DataFrame) -> pd.Series:
-        return pd.Series({'TotalTests': df.Cases.sum()})
-
     return df \
-        .groupby(['ABSCode', 'ABSText']) \
-        .apply(extract_stats) \
-        .reset_index()
+        .groupby(['ABSCode', 'ABSText'])['Cases'] \
+        .sum() \
+        .reset_index(name='TotalTests')
 
 
 def daily_tests(df: pd.DataFrame) -> pd.DataFrame:
