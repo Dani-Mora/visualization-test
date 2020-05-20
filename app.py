@@ -46,7 +46,7 @@ def _daily_info_plot() -> go.Figure:
 
     daily_rates_df = daily_positive_rates(current_df)
     fig.add_trace(go.Scatter(x=daily_rates_df.Date,
-                             y=daily_rates_df['Percentatge positious'],
+                             y=daily_rates_df['Percentatge positius'],
                              mode='markers',
                              name='Positius (%)'),
                   secondary_y=True)

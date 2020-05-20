@@ -4,7 +4,7 @@ from enum import Enum
 
 from datetime import datetime
 
-POSITIVE_STR = 'Positiu'
+POSITIVE_KEYWORD = 'Positiu'
 NEGATIVE_STR = 'Sospitós'
 
 
@@ -48,12 +48,7 @@ def latest_data():
 def tests_per_abs(df: pd.DataFrame) -> pd.DataFrame:
 
     def extract_stats(df: pd.DataFrame) -> pd.Series:
-
-        return pd.Series({
-            'TotalTests': df.Cases.sum(),
-            'Positius': df[df.Diagnose == POSITIVE_STR].Cases.sum(),
-            'Negatius': df[df.Diagnose == NEGATIVE_STR].Cases.sum()
-        })
+        return pd.Series({'TotalTests': df.Cases.sum()})
 
     return df \
         .groupby(['ABSCode', 'ABSText']) \
@@ -72,11 +67,11 @@ def daily_tests(df: pd.DataFrame) -> pd.DataFrame:
 def daily_positive_rates(df: pd.DataFrame) -> pd.DataFrame:
 
     def _get_positive_perc(df: pd.DataFrame) -> float:
-        positives = df[df.Diagnose == POSITIVE_STR].Cases.sum()
+        positives = df[df.Diagnose.str.contains(POSITIVE_KEYWORD)].Cases.sum()
         return round(positives / df.Cases.sum() * 100, 2)
 
     return df \
         .groupby(['Date']) \
         .apply(_get_positive_perc) \
-        .reset_index(name='Percentatge positious') \
+        .reset_index(name='Percentatge positius') \
         .fillna(0)
