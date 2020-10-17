@@ -4,13 +4,14 @@ Visualization tool to display real-time COVID-19 tests performed in Catalunya. D
 
 # Development
 
+Make sure Python3.7+ and Conda >= 4.8.5 are installed.
+
 In order to contribute to this repo and develop locally, you must install the python environment:
 
+```bash
+conda env create -f environment.yml
+conda activate dash
 ```
-pipenv install
-```
-
-Make sure Python3.7+ and Pipenv are installed.
 
 ## Run app
 
@@ -20,10 +21,10 @@ Make sure the latest data is downloaded from:
 curl 'https://analisi.transparenciacatalunya.cat/api/views/xuwf-dxjd/rows.csv' -o rows.cs
 ```
 
-App can be locally deployed by typing (make sure you installed the environment, as detailed above):
+App can be locally deployed by typing (make sure you installed and activated the environment, as detailed above):
 
 ```bash
-pipenv shell run app.py
+python app.py
 ```
 
 # Future work
