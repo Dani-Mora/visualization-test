@@ -1,4 +1,6 @@
 .idea
+.vscode
+rows.csv
 .ipynb_checkpoints
 __pycache__
 .venv
