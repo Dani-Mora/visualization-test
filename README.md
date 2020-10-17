@@ -14,9 +14,15 @@ Make sure Python3.7+ and Pipenv are installed.
 
 ## Run app
 
+Make sure the latest data is downloaded from:
+
+```bash
+curl 'https://analisi.transparenciacatalunya.cat/api/views/xuwf-dxjd/rows.csv' -o rows.cs
+```
+
 App can be locally deployed by typing (make sure you installed the environment, as detailed above):
 
-```
+```bash
 pipenv shell run app.py
 ```
 
